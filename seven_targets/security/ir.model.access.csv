@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_crm_lead_manager,crm.lead.manager,model_crm_lead,base.group_user,1,1,1,1
+access_crm_lead,crm.lead,model_crm_lead,base.group_user,1,1,1,0
+seven_targets.access_seven_targets_auth,access_seven_targets_auth,seven_targets.model_seven_targets_auth,base.group_user,1,1,1,0
+seven_targets.access_seven_targets_assistant,access_seven_targets_assistant,seven_targets.model_seven_targets_assistant,base.group_user,1,1,1,0
+seven_targets.access_seven_targets_sequence,access_seven_targets_sequence,seven_targets.model_seven_targets_sequence,base.group_user,1,1,1,0
+seven_targets.access_seven_targets_lead_connection_status,access_seven_targets_lead_connection_status,seven_targets.model_seven_targets_lead_connection_status,base.group_user,1,1,1,0
+seven_targets.access_seven_targets_access_token,access_seven_targets_access_token,seven_targets.model_seven_targets_access_token,base.group_user,1,1,1,0

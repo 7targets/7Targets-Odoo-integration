@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Menu Action -->
+    <record id="action_seven_targets_lead_connection_status" model="ir.actions.act_window">
+        <field name="name">Lead Connection Status</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">seven.targets.lead.connection.status</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_seven_targets_settings" model="ir.actions.act_window">
+        <field name="name">Seven Targets API Configuration</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">seven.targets.auth</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem
+      id="menu_seven_targets_root"
+      name="7Targets"
+      parent="crm.crm_menu_root"
+      sequence="100"
+    />
+
+    <menuitem
+      id="menu_seven_targets_lead_connection_status"
+      name="Lead Connection Status"
+      parent="menu_seven_targets_root"
+      sequence="30"
+      action="action_seven_targets_lead_connection_status"
+    />
+
+    <menuitem
+      id="menu_seven_targets_config"
+      name="API Configuration"
+      parent="menu_seven_targets_root"
+      sequence="100"
+      action="action_seven_targets_settings"
+      />
+
+</odoo>
