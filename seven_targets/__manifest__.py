@@ -7,7 +7,7 @@
     "author": "7Targets",
     "maintainer": "7Targets",
     "website": "www.7targets.ai",
-    "license": "APACHE-2",
+    "license": "LGPL-3",
     "depends": ["crm","mail"],
     "data": [
         "security/ir.model.access.csv",
