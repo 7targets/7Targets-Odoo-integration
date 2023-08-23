@@ -5,7 +5,7 @@ class SevenTargetsLeadConnectionStatus(models.Model):
     _name = "seven.targets.lead.connection.status"
     _description = "Seven Targets Lead Connection Status Mapping"
     
-    seven_targets_state = fields.Selection([('Cold','Cold'),('Engaged','Engaged'),('Warm', 'Warm'),('Hot','Hot'),('Responded','Responded'),('DeActivated','DeActivated'),('UnSubscribed','UnSubscribed'),('Processed','Processed'),('Pending','Pending'),('New','New'),],string="Seven Targets State", required=True)
+    name = fields.Selection([('Cold','Cold'),('Engaged','Engaged'),('Warm', 'Warm'),('Hot','Hot'),('Responded','Responded'),('DeActivated','DeActivated'),('UnSubscribed','UnSubscribed'),('Processed','Processed'),('Pending','Pending'),('New','New'),],string="Seven Targets State", required=True)
     odoo_stage = fields.Selection([],string="Odoo Stage", required=True)
     
     @api.model

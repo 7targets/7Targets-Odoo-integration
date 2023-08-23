@@ -9,8 +9,8 @@
     <form>
         <sheet>
             <group>
-                <field name="odoo_stage"/>
-                <field name="seven_targets_state"/>
+                <field name="odoo_stage" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
+                <field name="name"/>
             </group>
         </sheet>
     </form>
@@ -22,7 +22,7 @@
     <field name="model">seven.targets.lead.connection.status</field>
     <field name="arch" type="xml">
         <tree>
-            <field name="seven_targets_state"/>
+            <field name="name"/>
             <field name="odoo_stage"/>
         </tree>
     </field>

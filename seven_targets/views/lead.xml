@@ -6,13 +6,13 @@
         <field name="inherit_id" ref="crm.crm_lead_view_form" />
             <field name="arch" type="xml">
                 <field name="user_id" position="after">
-                    <field name="assistant"/>
+                    <field name="assistant" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
                 </field>
                 <field name="assistant" position="after">
-                    <field name="lead_connection_status"/>
+                    <field name="lead_connection_status" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
                 </field>
                 <field name="lead_connection_status" position="after">
-                    <field name="seven_targets_sequence"/>
+                    <field name="seven_targets_sequence" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
                 </field>
             </field>
     </record>
