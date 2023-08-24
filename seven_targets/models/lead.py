@@ -21,12 +21,15 @@ class CRMLead(models.Model):
             if self.seven_targets_sequence.sequence_seven_targets_id not in [None, 0] and not \
                 isinstance(self.seven_targets_sequence.sequence_seven_targets_id, (bool)):
                 schedule_id = self.seven_targets_sequence.sequence_seven_targets_id
+            lead_email = self.email_from
+            if vals.get('email_from'):
+                lead_email = vals.get('email_from')
             data = {
                 "name": first_name,
                 "lastName": last_name, 
                 "crm": "ODOO",
                 "additionalInformationLine": "", 
-                "email": self.email_from,
+                "email": lead_email,
                 "assistantEmail" : None,
                 "scheduleId" : schedule_id
             }
@@ -43,18 +46,20 @@ class CRMLead(models.Model):
             bearer_token, user_identifier = self._get_seven_targets_authentication()
 
             if self.seven_targets_lead_id in [None,0]:
-                seven_targets_lead_id = self._create_new_seven_targets_lead(data, bearer_token, user_identifier)
-                if seven_targets_lead_id is not None:
-                    vals['seven_targets_lead_id'] = seven_targets_lead_id
+                lead = self._create_new_seven_targets_lead(data, bearer_token, user_identifier)
+                if lead['id'] is not None:
+                    vals['seven_targets_lead_id'] = lead['id']
+                    vals['lead_connection_status'] = lead['state']
                 else:
                     vals["assistant"] = None
                     vals["seven_targets_sequence"] = None
             else:
                 data['id'] = self.seven_targets_lead_id
-                seven_targets_lead_id = self._update_existing_seven_targets_lead(data, bearer_token, user_identifier)
-                if seven_targets_lead_id is None:
+                lead = self._update_existing_seven_targets_lead(data, bearer_token, user_identifier)
+                if lead['id'] is None:
                     vals["assistant"] = None
                     vals["seven_targets_sequence"] = None
+                vals['lead_connection_status'] = lead['state']
         return super(CRMLead, self).write(vals)
 
     @api.model
@@ -92,10 +97,10 @@ class CRMLead(models.Model):
             lead = response.json()
             message_body = "<strong>Assistant's Note:</strong> Thanks. I will start working on this Lead. You can edit the message sequence or other details of this lead by clicking <a href=\'" + "https://solution-qa.7targets.com/all-leads?id=%s\' target='_blank'>here</a>" % (lead['id'])
             self.message_post(body=message_body)
-            return lead['id']
+            return lead
         else:
             self.message_post(body="Failed to create lead in 7Targets. " + response.json())
-            return None
+            return {}
 
     def _update_existing_seven_targets_lead(self, data, bearer_token, user_identifier):
         headers = {
@@ -106,9 +111,10 @@ class CRMLead(models.Model):
                                 data=json.dumps(data),headers=headers,timeout=30)
         if response.status_code == 201:
             self.message_post(body="Updated lead in 7Targets")
+            return response.json()
         else:
             self.message_post(body="Failed to Update lead in 7Targets " + response.json())
-            return None
+            return {}
 
     def _get_seven_targets_authentication(self):
         bearer_token, user_identifier = self._get_seven_targets_token()
