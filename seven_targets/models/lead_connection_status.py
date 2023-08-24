@@ -9,7 +9,9 @@ class SevenTargetsLeadConnectionStatus(models.Model):
     odoo_stage = fields.Many2one("crm.stage",string="Odoo Stage", required=True)
     
     @api.constrains('odoo_stage')
-    def _check_odoo_stage_unique(self):
-        odoo_stage_counts = self.search_count([('odoo_stage', '=', self.odoo_stage.name), ('id', '!=', self.id)])
-        if odoo_stage_counts > 0:
-            raise ValidationError("Odoo Stage already exists!")
+    def _check_unique_odoo_stage(self):
+        for record in self:
+            if record.odoo_stage:
+                domain = [('odoo_stage', '=', record.odoo_stage.id)]
+                if self.search_count(domain) > 1:
+                    raise ValidationError("Odoo Stage already exists!")
