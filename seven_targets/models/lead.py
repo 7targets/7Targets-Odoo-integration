@@ -34,8 +34,8 @@ class CRMLead(models.Model):
                 "scheduleId" : schedule_id
             }
 
-            if not vals.get('assistant') and not self.assistant:
-                raise ValidationError("Select an assistant to assign Lead to Seven Targets.")
+            # if not vals.get('assistant') and not self.assistant:
+            #     raise ValidationError("Select an assistant to assign Lead to Seven Targets.")
             if vals.get('assistant') and not isinstance(vals.get('assistant'), (bool)):
                 data['assistantEmail'] = self._set_assistant_email(vals.get('assistant'))
             if self.stage_id is not None:
@@ -44,19 +44,18 @@ class CRMLead(models.Model):
                 data['scheduleId'] = self._set_seven_targets_sequence(vals.get('seven_targets_sequence'))
             vals['lead_connection_status'] = self._set_seven_targets_state()
             bearer_token, user_identifier = self._get_seven_targets_authentication()
-
-            if self.seven_targets_lead_id in [None,0]:
+            if self.seven_targets_lead_id in [None,0] and data.get('assistantEmail'):
                 lead = self._create_new_seven_targets_lead(data, bearer_token, user_identifier)
-                if lead['id'] is not None:
+                if lead.get("id"):
                     vals['seven_targets_lead_id'] = lead['id']
                     vals['lead_connection_status'] = lead['state']
                 else:
                     vals["assistant"] = None
                     vals["seven_targets_sequence"] = None
-            else:
+            elif self.seven_targets_lead_id not in [None,0] and self.assistant:
                 data['id'] = self.seven_targets_lead_id
                 lead = self._update_existing_seven_targets_lead(data, bearer_token, user_identifier)
-                if lead['id'] is None:
+                if lead.get("id"):
                     vals["assistant"] = None
                     vals["seven_targets_sequence"] = None
                 vals['lead_connection_status'] = lead['state']
@@ -109,7 +108,7 @@ class CRMLead(models.Model):
         }
         response = requests.put('https://api-qa.7targets.com/leads',
                                 data=json.dumps(data),headers=headers,timeout=30)
-        if response.status_code == 201:
+        if response.status_code == 200:
             self.message_post(body="Updated lead in 7Targets")
             return response.json()
         else:
@@ -207,4 +206,3 @@ class CRMLead(models.Model):
             if len(contact_name_list) > 1:
                 last_name = contact_name_list[-1]
         return first_name, last_name
-    
