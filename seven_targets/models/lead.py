@@ -98,7 +98,7 @@ class CRMLead(models.Model):
             self.message_post(body=message_body)
             return lead
         else:
-            self.message_post(body="Failed to create lead in 7Targets. " + response.json())
+            self.message_post(body="Failed to create lead in 7Targets. " + response.json()["body"])
             return {}
 
     def _update_existing_seven_targets_lead(self, data, bearer_token, user_identifier):
@@ -112,7 +112,7 @@ class CRMLead(models.Model):
             self.message_post(body="Updated lead in 7Targets")
             return response.json()
         else:
-            self.message_post(body="Failed to Update lead in 7Targets " + response.json())
+            self.message_post(body="Failed to Update lead in 7Targets " + response.json()["body"])
             return {}
 
     def _get_seven_targets_authentication(self):
