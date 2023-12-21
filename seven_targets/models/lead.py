@@ -24,6 +24,9 @@ class CRMLead(models.Model):
             lead_email = self.email_from
             if vals.get('email_from'):
                 lead_email = vals.get('email_from')
+            subject = self.display_name
+            if vals.get('name'):
+                subject = vals.get('name')
             data = {
                 "name": first_name,
                 "lastName": last_name, 
@@ -31,12 +34,13 @@ class CRMLead(models.Model):
                 "additionalInformationLine": "", 
                 "email": lead_email,
                 "assistantEmail" : None,
-                "scheduleId" : schedule_id
+                "scheduleId" : schedule_id,
+                "userTypedSubject": subject
             }
 
             # if not vals.get('assistant') and not self.assistant:
             #     raise ValidationError("Select an assistant to assign Lead to Seven Targets.")
-            if vals.get('assistant') and not isinstance(vals.get('assistant'), (bool)):
+            if vals.get('assistant') and not isinstance(vals.get('assistant'), bool):
                 data['assistantEmail'] = self._set_assistant_email(vals.get('assistant'))
             if self.stage_id is not None:
                 data['state'] = self._set_seven_targets_state()
@@ -92,19 +96,19 @@ class CRMLead(models.Model):
         }
         response = requests.post('https://api.7targets.com/leads',
                                  data=json.dumps(data),headers=headers,timeout=30)
-        if response.status_code == 200:
+        if response.status_code == 201:
             lead = response.json()
-            message_body = "<strong>Assistant's Note:</strong> Thanks. I will start working on this Lead. You can edit the message sequence or other details of this lead by clicking <a href=\'" + "https://solution.7targets.com/all-leads?id=%s\' target='_blank'>here</a>" % (lead['id'])
+            message_body = "<strong>Assistant's Note:</strong> Thanks. I will start working on this Lead. You can edit the message sequence or other details of this lead by clicking <a href=\'" + "https://solution.7targets.com/all-leads?id=" + str(lead['id'])+ "\' target='_blank'>here</a>"
             self.message_post(body=message_body)
             return lead
         else:
-            self.message_post(body="Failed to create lead in 7Targets. " + response.json()["body"])
+            self.message_post(body="Failed to create lead in 7Targets. " + response.json())
             return {}
 
     def _update_existing_seven_targets_lead(self, data, bearer_token, user_identifier):
         headers = {
             "Authorization": "Bearer " + bearer_token,
-            "7ts-user-identifier": user_identifier,
+            "7ts-user-identifier": user_identifier
         }
         response = requests.put('https://api.7targets.com/leads',
                                 data=json.dumps(data),headers=headers,timeout=30)
