@@ -90,11 +90,11 @@ class CRMLead(models.Model):
             "Authorization": "Bearer " + bearer_token,
             "7ts-user-identifier": user_identifier
         }
-        response = requests.post('https://api-qa.7targets.com/leads',
+        response = requests.post('https://api.7targets.com/leads',
                                  data=json.dumps(data),headers=headers,timeout=30)
         if response.status_code == 200:
             lead = response.json()
-            message_body = "<strong>Assistant's Note:</strong> Thanks. I will start working on this Lead. You can edit the message sequence or other details of this lead by clicking <a href=\'" + "https://solution-qa.7targets.com/all-leads?id=%s\' target='_blank'>here</a>" % (lead['id'])
+            message_body = "<strong>Assistant's Note:</strong> Thanks. I will start working on this Lead. You can edit the message sequence or other details of this lead by clicking <a href=\'" + "https://solution.7targets.com/all-leads?id=%s\' target='_blank'>here</a>" % (lead['id'])
             self.message_post(body=message_body)
             return lead
         else:
@@ -106,7 +106,7 @@ class CRMLead(models.Model):
             "Authorization": "Bearer " + bearer_token,
             "7ts-user-identifier": user_identifier,
         }
-        response = requests.put('https://api-qa.7targets.com/leads',
+        response = requests.put('https://api.7targets.com/leads',
                                 data=json.dumps(data),headers=headers,timeout=30)
         if response.status_code == 200:
             self.message_post(body="Updated lead in 7Targets")
@@ -179,7 +179,7 @@ class CRMLead(models.Model):
             'grant_type':'client_credentials',
             'scope':'leads/post'
         }
-        response = requests.post('https://login-qa.7targets.com/oauth2/token',
+        response = requests.post('https://login.7targets.com/oauth2/token',
                                  headers=headers,data=data)
         if response.status_code == 200:
             return response.json()['access_token']
