@@ -1,6 +1,6 @@
 {
     "name": "Seven Targets Integration",
-    "version": "15.0.1.0.1",
+    "version": "15.0.1.0.2",
     "summary": "Integrate Odoo with 7Targets to Automate Followups",
     "description": "Automate Followups using 7Targets & Odoo Integration",
     "category": "Sales",

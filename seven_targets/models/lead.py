@@ -38,8 +38,6 @@ class CRMLead(models.Model):
                 "userTypedSubject": subject
             }
 
-            # if not vals.get('assistant') and not self.assistant:
-            #     raise ValidationError("Select an assistant to assign Lead to Seven Targets.")
             if vals.get('assistant') and not isinstance(vals.get('assistant'), bool):
                 data['assistantEmail'] = self._set_assistant_email(vals.get('assistant'))
             if self.stage_id is not None:
@@ -60,9 +58,7 @@ class CRMLead(models.Model):
                 data['id'] = self.seven_targets_lead_id
                 lead = self._update_existing_seven_targets_lead(data, bearer_token, user_identifier)
                 if lead.get("id"):
-                    vals["assistant"] = None
-                    vals["seven_targets_sequence"] = None
-                vals['lead_connection_status'] = lead['state']
+                    vals['lead_connection_status'] = self._get_seven_targets_state_id(lead['state'])
         return super(CRMLead, self).write(vals)
 
     @api.model
@@ -72,6 +68,15 @@ class CRMLead(models.Model):
         if not stage_record:
             raise ValidationError("No mapping found for " + self.stage_id.name + " in Lead Connection Status Mapping")
         return stage_record.name
+
+
+    @api.model
+    def _get_seven_targets_state_id(self, seven_targets_lead_state):
+        stage_state_mapping_model = self.env['seven.targets.lead.connection.status']
+        stage_record = stage_state_mapping_model.search([('name', '=', seven_targets_lead_state)], limit=1)
+        if not stage_record:
+            raise ValidationError("No mapping found for Seven Targets State" + self.stage_id.name + " in Lead Connection Status Mapping")
+        return stage_record.id
 
     @api.model
     def _set_assistant_email(self, assistant_id):
@@ -116,7 +121,7 @@ class CRMLead(models.Model):
             self.message_post(body="Updated lead in 7Targets")
             return response.json()
         else:
-            self.message_post(body="Failed to Update lead in 7Targets " + response.json()["body"])
+            self.message_post(body="Failed to Update lead in 7Targets " + response.json())
             return {}
 
     def _get_seven_targets_authentication(self):
