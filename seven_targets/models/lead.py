@@ -50,7 +50,7 @@ class CRMLead(models.Model):
                 lead = self._create_new_seven_targets_lead(data, bearer_token, user_identifier)
                 if lead.get("id"):
                     vals['seven_targets_lead_id'] = lead['id']
-                    vals['lead_connection_status'] = lead['state']
+                    vals['lead_connection_status'] = self._get_seven_targets_state_id(lead['state'])
                 else:
                     vals["assistant"] = None
                     vals["seven_targets_sequence"] = None
