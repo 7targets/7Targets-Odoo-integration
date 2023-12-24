@@ -59,6 +59,13 @@ class CRMLead(models.Model):
                 lead = self._update_existing_seven_targets_lead(data, bearer_token, user_identifier)
                 if lead.get("id"):
                     vals['lead_connection_status'] = self._get_seven_targets_state_id(lead['state'])
+                else:
+                    if vals.get('lead_connection_status'):
+                        vals['lead_connection_status'] = self.lead_connection_status
+                    if vals.get('assistant'):
+                        vals['assistant'] = self.assistant
+                    if vals.get('seven_targets_sequence'):
+                        vals['seven_targets_sequence'] = self.seven_targets_sequence
         return super(CRMLead, self).write(vals)
 
     @api.model
